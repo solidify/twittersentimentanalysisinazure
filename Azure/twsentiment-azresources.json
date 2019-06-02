@@ -1,0 +1,187 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "commonName": {
+        "type": "string",
+        "minLength": 2,
+        "defaultValue": "[uniqueString(resourceGroup().id)]",
+        "metadata": {
+          "description": "Needs to be unique name"
+        }
+      },
+      "environmentName": {
+        "type": "string",
+        "minLength": 2,
+        "metadata": {
+          "description": "Environment name"
+        }
+      },
+      "shortLocation": {
+        "type": "string",
+        "defaultValue": "weu",
+        "minLength": 2,
+        "maxLength": 3,
+        "metadata": {
+          "description": "Short location ushc as weu, neu, etc"
+        }
+      },
+      "storageSkuTier": {
+        "type": "string",
+        "defaultValue": "Standard"
+      },
+      "storageSkuName": {
+        "type": "string",
+        "defaultValue": "Standard_LRS"
+      }
+    },
+    "variables": {
+      "combinedName": "[concat(parameters('environmentName'),'-',parameters('shortLocation'),'-', parameters('commonName'))]",
+      "combinedNameShort":"[replace(variables('combinedName'),'-', '')]",
+      "functionAppName": "[concat(variables('combinedName'),'-fxapp')]",
+      "servicePlanName": "[concat(variables('functionAppName'), '-sp')]",
+      "appInsightsName": "[concat(variables('combinedName'), '-appinsights')]",
+      "appInsightsResourceId": "[resourceId('Microsoft.Insights/components', variables('appInsightsName'))]",
+      "storageName":"[concat(variables('combinedNameShort'), 'strg')]",
+      "storageNameResourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
+      "storageApiVersion": "2017-10-01",
+      "cognitiveAccountName": "[concat(variables('combinedName'),'-cslang')]"      
+    },
+    "resources": [
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "sku": {
+              "name": "S0"
+            },
+            "kind": "CognitiveServices",
+            "name": "[variables('cognitiveAccountName')]",
+            "apiVersion": "2017-04-18",
+            "location": "[resourceGroup().location]",
+            "properties": {},
+            "dependsOn": []
+          },
+      {
+        "name": "[variables('storageName')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "sku": {
+          "name": "[parameters('storageSkuName')]",
+          "tier": "[parameters('storageSkuTier')]"
+        },
+        "kind": "Storage",
+        "apiVersion": "[variables('storageApiVersion')]",
+        "location": "[resourceGroup().location]",
+        "tags": {
+          "displayName": "[variables('storageName')]",
+          "environment": "[parameters('environmentName')]"
+        },
+        "properties": {
+          "encryption": {
+            "keySource": "Microsoft.Storage",
+            "services": {
+              "blob": {
+                "enabled": true
+              }
+            }
+          }
+        },
+        "dependsOn": []
+      },
+      {
+        "type": "Microsoft.Web/serverfarms",
+        "apiVersion": "2017-08-01",
+        "name": "[variables('servicePlanName')]",
+        "location": "[resourceGroup().location]",
+        "sku": {
+          "name": "Y1",
+          "tier": "Dynamic",
+          "size": "Y1",
+          "family": "Y",
+          "capacity": 1
+        },
+        "tags": {
+          "displayName": "[variables('servicePlanName')]",
+          "environment": "[parameters('environmentName')]"
+        }
+      },
+      { 
+        "apiVersion": "2016-08-01",
+        "type": "Microsoft.Web/sites",
+        "name": "[variables('functionAppName')]",
+        "location": "[resourceGroup().location]",
+        "kind": "functionapp",
+        "properties": {
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]",
+          "siteConfig": {
+            "cors": {
+              "allowedOrigins": [
+                "*"
+              ]
+            },
+            "appSettings": [
+              {
+                "name": "FUNCTIONS_EXTENSION_VERSION",
+                "value": "~1"
+              },
+              {
+                "name": "AzureWebJobsStorage",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',listkeys(variables('storageNameResourceId'), variables('storageApiVersion')).keys[0].value,';EndpointSuffix=core.windows.net')]"
+              },
+              {
+                "name": "AzureWebJobsDashboard",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',listkeys(variables('storageNameResourceId'), variables('storageApiVersion')).keys[0].value,';EndpointSuffix=core.windows.net')]"
+              },
+              {
+                "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', listKeys(variables('storageNameResourceId'),variables('storageApiVersion')).keys[0].value,';EndpointSuffix=core.windows.net')]"
+              },
+              {
+                "name": "WEBSITE_CONTENTSHARE",
+                "value": "[toLower(variables('functionAppName'))]"
+              },
+              {
+                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                "value": "[reference(variables('appInsightsResourceId'), '2015-05-01').InstrumentationKey]"
+              }
+            ]
+          }
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]",
+          "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
+          "[resourceId('Microsoft.Insights/components',variables('appInsightsName'))]"
+        ],
+        "tags": {
+          "displayName": "[variables('functionAppName')]",
+          "environment": "[parameters('environmentName')]"
+        }
+      },
+      {
+        "name": "[variables('appInsightsName')]",
+        "type": "Microsoft.Insights/components",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2014-04-01",
+        "dependsOn": [],
+        "tags": {
+          "displayName": "[concat('Component ',variables('appInsightsName'))]",
+          "environment": "[parameters('environmentName')]"
+        },
+        "properties": {
+          "applicationId": "[variables('appInsightsName')]"
+        }
+      }
+    ],
+    "outputs": {
+      "Azure_ApplicationInsightKey": {
+        "type": "string",
+        "value": "[reference(variables('appInsightsName')).InstrumentationKey]"
+      },
+      "Azure_FunctionAppName": {
+        "type": "string",
+        "value": "[variables('functionAppName')]"
+      },
+      "Azure_StorageAccountName": {
+        "type": "string",
+        "value": "[variables('storageName')]"
+      }
+    }
+  }
