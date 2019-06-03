@@ -8,15 +8,36 @@ You can do this en sevreal ways:
 ## Here are the steps for doing it manuellay
 Start by logging in to the Azure portal with your team account, https://portal.azure.com 
 
-[drag]: https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/AzurePortal.png
+![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/AzurePortal.png)
 
 
 * Setup azure resources by doing the following steps:
   * Select create resource and select "Template deployment (deploy using custom templates)"
+  
+![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/TemplateDeployment.png)  
+  
   * Select "Build your own template in the editor"
+
+
+![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/BuildYourOwn.png)    
+  
   * Copy and paste code from [github](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/Azure/twsentiment-azresources.json), click save
+
+
+ ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/SaveTemplate.png)    
+    
   * Select your resource group and a location close to you, leave CommonName as it is and write prod as the environment name. Agree to the terms and click purchase
+
+
+  ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Purchase.png)    
+  
   * When the provisioning is done open your resource group and select your app service. Select + next to functions and create new function. Select HTTP trigger based on C# and call the function TwitterSentimentFunction
+ 
+  ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Createfunction.png)  
+  
+  ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Createfunction2.png)  
+  
   * Click create and copy code from [github](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/Azure/TwitterSentimentFunction/AzureFunction.v1.csx), click save
   
+  ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Createfunction3.png)  
 
