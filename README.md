@@ -8,6 +8,7 @@ You can do this en sevreal ways:
 ## Here are the steps for doing it manuellay
 Start by logging in to the Azure portal with your team account, https://portal.azure.com 
 
+[drag]: https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/AzurePortal.png
 
 
 * Setup azure resources by doing the following steps:
