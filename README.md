@@ -1,11 +1,11 @@
 # Twitter sentiment analysis in Azure
 This contains the guidance to provision resources in Azure for the Twitter Sentiment Analysis.
-You can do this en sevreal ways:
+You can do this in several ways:
 * With a build and release pipeline
 * With a script
 * By doing it manually
 
-## Here are the steps for doing it manuellay
+## Here are the steps for doing it manually
 Start by logging in to the Azure portal with your team account, https://portal.azure.com 
 
 ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/AzurePortal.png)
@@ -41,3 +41,7 @@ Start by logging in to the Azure portal with your team account, https://portal.a
   
   ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Createfunction3.png)  
 
+# Using the resources for sentiment analysis
+Once you have deployed these resources, you will need a twitter application (ConsumerKey,ConsumerSecret) and can configure one the following Azure DevOps extensions:
+* [Twitter Sentiment Analysis as Release Gate](https://marketplace.visualstudio.com/items?itemName=ms-devlabs.vss-services-twittersentimentanalysis)
+* [Twitter Sentiment Analysis on Dashboard](https://marketplace.visualstudio.com/items?itemName=solidify-labs.twitter-sentiment-dashboard-widgets)
