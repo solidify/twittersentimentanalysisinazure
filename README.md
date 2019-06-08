@@ -26,8 +26,11 @@ Start by logging in to the Azure portal with your team account, https://portal.a
 
  ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/SaveTemplate.png)    
     
-  * Select your resource group and a location close to you, leave CommonName as it is and write prod as the environment name. Agree to the terms and click purchase
+  * Select your resource group and a location close to you (it must be one of the following)
+  
+ ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/CongitiveServicesLocations.png)  
 
+  * Leave CommonName as it is and write prod as the environment name. Agree to the terms and click purchase
 
   ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Purchase.png)    
   
@@ -38,7 +41,7 @@ Start by logging in to the Azure portal with your team account, https://portal.a
   ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Createfunction2.png)  
   
   * Click create and copy code from [github](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/Azure/TwitterSentimentFunction/AzureFunction.v1.csx), click save
-  
+
   ![Screenshot](https://github.com/solidify/twittersentimentanalysisinazure/blob/master/documents/Createfunction3.png)  
 
 # Using the resources for sentiment analysis
