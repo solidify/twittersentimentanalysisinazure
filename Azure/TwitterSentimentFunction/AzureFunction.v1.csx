@@ -191,7 +191,10 @@ public class SentimentScore
         NumberOfTweetsParsed = count;
     }
 
+    [JsonProperty(PropertyName = "HashTag" )]
     public string HashTag { get; set; }
+    [JsonProperty(PropertyName = "Score" )]
     public double Score { get; set; }
+    [JsonProperty(PropertyName = "NumberOfTweetsParsed" )]
     public int NumberOfTweetsParsed { get; set; }
 }
