@@ -13,6 +13,7 @@
       "environmentName": {
         "type": "string",
         "minLength": 2,
+        "maxLength": 4,
         "metadata": {
           "description": "Environment name"
         }
